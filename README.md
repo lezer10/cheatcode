@@ -134,8 +134,8 @@ graph TD
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/deployment-cheatcode.git
-cd deployment-cheatcode
+git clone https://github.com/cheatcode-ai/cheatcode.git
+cd cheatcode
 ```
 
 ### 2. Backend Configuration
@@ -299,7 +299,7 @@ npm run dev
 ## Repository Structure
 
 ```
-deployment-cheatcode/
+cheatcode/
 ├── backend/                     # FastAPI service, workers, agents, services
 │   ├── agent/                   # Agent runtime, tools and prompts
 │   ├── services/                # Integrations (billing, email, llm, redis, etc.)
@@ -472,10 +472,10 @@ sudo usermod -aG docker $USER
 3. **Check Redis Connectivity**
    ```bash
    # Check Redis container logs
-   docker logs deployment-cheatcode-redis-1
+   docker logs cheatcode-redis-1
    
    # Test Redis connection
-   docker exec -it deployment-cheatcode-redis-1 redis-cli ping
+   docker exec -it cheatcode-redis-1 redis-cli ping
    ```
 
 4. **Verify LLM Provider Keys**
@@ -498,7 +498,7 @@ sudo usermod -aG docker $USER
 3. **Middleware Issues**
    ```bash
    # Check middleware logs
-   docker logs deployment-cheatcode-frontend-1
+   docker logs cheatcode-frontend-1
    ```
 
 #### Database Issues
@@ -511,7 +511,7 @@ sudo usermod -aG docker $USER
 2. **Migration Issues**
    ```bash
    # Check backend logs for database errors
-   docker logs deployment-cheatcode-api-1
+   docker logs cheatcode-api-1
    ```
 
 #### Agent Not Responding
@@ -519,7 +519,7 @@ sudo usermod -aG docker $USER
 1. **Check Worker Status**
    ```bash
    # Verify worker is running
-   docker logs deployment-cheatcode-worker-1
+   docker logs cheatcode-worker-1
    ```
 
 2. **LLM Provider Issues**
@@ -549,12 +549,12 @@ sudo usermod -aG docker $USER
 2. **Health Checks**
    - API: http://localhost:8000/api/health
    - Frontend: http://localhost:3000
-   - Redis: `docker exec -it deployment-cheatcode-redis-1 redis-cli ping`
+   - Redis: `docker exec -it cheatcode-redis-1 redis-cli ping`
 
 3. **Common Solutions**
    - Restart services: `docker compose restart`
    - Rebuild containers: `docker compose up --build`
-   - Clear Redis cache: `docker exec -it deployment-cheatcode-redis-1 redis-cli flushall`
+   - Clear Redis cache: `docker exec -it cheatcode-redis-1 redis-cli flushall`
    - Reset Docker: `docker compose down && docker compose up --build`
 
 ## Contributing
@@ -565,7 +565,7 @@ We welcome contributions from the community! Please follow these guidelines:
 
 1. **Fork the Repository**
    - Click the "Fork" button on the GitHub repository page
-   - Clone your fork locally: `git clone https://github.com/YOUR_USERNAME/deployment-cheatcode.git`
+   - Clone your fork locally: `git clone https://github.com/YOUR_USERNAME/cheatcode.git`
 
 2. **Set Up Development Environment**
    - Follow the [Local Development](#local-development) instructions
