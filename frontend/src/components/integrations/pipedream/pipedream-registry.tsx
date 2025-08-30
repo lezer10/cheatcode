@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+
 import { Search, Loader2, ExternalLink, Zap, User, CheckCircle2, Plus } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { usePipedreamApps } from '@/hooks/react-query/pipedream/use-pipedream';
@@ -28,7 +28,7 @@ export const PipedreamRegistry: React.FC<PipedreamRegistryProps> = ({
 }) => {
   const [search, setSearch] = useState('');
   const [selectedCategory] = useState<string>(''); // Category filtering removed - always show all apps
-  const [page, setPage] = useState(1);
+
   // Removed viewMode - using consistent grid layout
   const [showToolSelector, setShowToolSelector] = useState(false);
   const [selectedProfile, setSelectedProfile] = useState<PipedreamProfile | null>(null);
@@ -36,7 +36,7 @@ export const PipedreamRegistry: React.FC<PipedreamRegistryProps> = ({
   const [selectedAppForProfile, setSelectedAppForProfile] = useState<{ app_slug: string; app_name: string } | null>(null);
 
   const queryClient = useQueryClient();
-  const { data: appsData, isLoading, error, refetch } = usePipedreamApps(page, search, selectedCategory);
+  const { data: appsData, isLoading, error, refetch } = usePipedreamApps(search, selectedCategory);
   const { data: profiles } = usePipedreamProfiles();
   
   // Removed allAppsData query - no longer needed without category filtering
@@ -45,7 +45,6 @@ export const PipedreamRegistry: React.FC<PipedreamRegistryProps> = ({
 
   const handleSearch = (value: string) => {
     setSearch(value);
-    setPage(1);
   };
 
   const handleSearchSubmit = (e: React.FormEvent) => {
@@ -189,14 +188,7 @@ export const PipedreamRegistry: React.FC<PipedreamRegistryProps> = ({
               {app.description}
             </p>
 
-            {/* Featured Badge */}
-            {app.featured_weight > 100000 && (
-              <div className="mb-4">
-                <Badge variant="default" className="text-xs bg-primary/10 text-primary border-primary/20">
-                  Featured
-                </Badge>
-              </div>
-            )}
+
 
             {/* Connection Status */}
             <div className="mt-auto">
@@ -287,62 +279,13 @@ export const PipedreamRegistry: React.FC<PipedreamRegistryProps> = ({
 
           {!isLoading && appsData?.apps && appsData.apps.length > 0 && (
             <>
-              {/* Featured Apps Section - only show on first page with no search */}
-              {page === 1 && !search && (
-                <>
-                  <div className="mb-8">
-                    <div className="flex items-center gap-2 mb-4">
-                      <h3 className="text-lg font-semibold text-foreground">Featured Apps</h3>
-                      <Badge variant="outline" className="text-xs">Popular</Badge>
-                    </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 max-w-full">
-                      {appsData.apps.filter(app => app.featured_weight > 100000).slice(0, 8).map((app: PipedreamApp) => (
-                        <AppCard key={`featured-${app.id}`} app={app} />
-                      ))}
-                    </div>
-                  </div>
-                  
-                  {/* All Apps Section */}
-                  <div className="mb-6">
-                    <h3 className="text-lg font-semibold text-foreground mb-4">All Apps</h3>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 max-w-full">
-                      {appsData.apps.map((app: PipedreamApp) => (
-                        <AppCard key={app.id} app={app} />
-                      ))}
-                    </div>
-                  </div>
-                </>
-              )}
-              
-              {/* Regular view for search results or subsequent pages */}
-              {(page > 1 || search) && (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 max-w-full">
-                  {appsData.apps.map((app: PipedreamApp) => (
-                    <AppCard key={app.id} app={app} />
-                  ))}
-                </div>
-              )}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 max-w-full">
+                {appsData.apps.map((app: PipedreamApp) => (
+                  <AppCard key={app.id} app={app} />
+                ))}
+              </div>
 
-              {appsData.page_info && appsData.page_info.end_cursor && (
-                <div className="flex justify-center pt-8">
-                  <Button
-                    onClick={() => setPage(page + 1)}
-                    disabled={isLoading}
-                    variant="default"
-                    size="lg"
-                    className="px-8 py-2 bg-primary hover:bg-primary/90 text-primary-foreground"
-                  >
-                    {isLoading ? (
-                      <>
-                        <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                        Loading more apps...
-                      </>
-                    ) : (
-                      'Load More Apps'
-                    )}
-                  </Button>
-                </div>
-              )}
+
             </>
           )}
 
@@ -357,7 +300,6 @@ export const PipedreamRegistry: React.FC<PipedreamRegistryProps> = ({
                 <Button
                   onClick={() => {
                     setSearch('');
-                    setPage(1);
                   }}
                   variant="default"
                   className="px-6"

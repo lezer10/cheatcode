@@ -62,13 +62,13 @@ export const usePipedreamHealthCheck = () => {
   });
 };
 
-export const usePipedreamApps = (page = 1, search?: string, category?: string) => {
+export const usePipedreamApps = (search?: string, category?: string) => {
   const pipedreamApi = usePipedreamApi();
   const { disableWindowFocus, disableMount, disableReconnect, disableInterval } = useRefetchControl();
   
   return useQuery({
-    queryKey: pipedreamKeys.apps(page, search, category),
-    queryFn: () => pipedreamApi.getApps(page, search, category),
+    queryKey: pipedreamKeys.apps(search, category),
+    queryFn: () => pipedreamApi.getApps(search, category),
     staleTime: 10 * 60 * 1000, // 10 minutes
     refetchOnWindowFocus: !disableWindowFocus,
     refetchOnMount: !disableMount,

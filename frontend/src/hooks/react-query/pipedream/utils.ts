@@ -106,7 +106,6 @@ export interface PipedreamApp {
   name_slug: string;
   description: string;
   categories: string[];
-  featured_weight: number;
   auth_type: string;
   img_src?: string; // Official Pipedream app icon URL
   custom_fields_json: string;
@@ -120,12 +119,6 @@ export interface PipedreamApp {
 export interface PipedreamAppResponse {
   success: boolean;
   apps: PipedreamApp[];
-  page_info: {
-    total_count: number;
-    count: number;
-    start_cursor?: string;
-    end_cursor?: string;
-  };
   total_count: number;
 }
 
@@ -321,11 +314,10 @@ export const usePipedreamApi = () => {
 
     // App Discovery
     async getApps(
-      page = 1,
       search?: string,
       category?: string
     ): Promise<PipedreamAppResponse> {
-      const queryParams = new URLSearchParams({ page: page.toString() });
+      const queryParams = new URLSearchParams();
       if (search) queryParams.append('search', search);
       if (category) queryParams.append('category', category);
 
@@ -502,7 +494,6 @@ export const pipedreamApi = {
 
   // App Discovery
   async getApps(
-    page = 1,
     search?: string,
     category?: string
   ): Promise<PipedreamAppResponse> {

@@ -354,34 +354,10 @@ async def get_available_pipedream_tools(
 
 @router.get("/apps", response_model=Dict[str, Any])
 async def get_pipedream_apps(
-    page: int = Query(1, ge=1),
     search: Optional[str] = Query(None),
     category: Optional[str] = Query(None)
 ):
-    logger.info(f"Fetching Pipedream apps registry, page: {page}")
-    
-    # Curated list of featured apps (shown first) - verified through discovery script
-    # Ordered by popularity (featured_weight) and category diversity
-    FEATURED_APPS = [
-        # Top productivity & collaboration (1M+ weight)
-        "notion", "google_sheets", "google_drive", "google_calendar", 
-        "supabase", "slack", "microsoft_teams",
-        
-        # Development & databases (100K+ weight)  
-        "github", "aws", "stripe", "salesforce_rest_api", "hubspot",
-        "woocommerce", "mongodb", "mysql", "postgresql",
-        
-        # Communication & marketing (10K+ weight)
-        "gmail", "telegram_bot_api", "sendgrid", "klaviyo", "zendesk",
-        "zoom", "twilio", "discord", "mailchimp",
-        
-        # Forms, productivity & file storage
-        "airtable_oauth", "typeform", "google_forms", "dropbox", 
-        "trello", "asana", "jira", "todoist", "clickup",
-        
-        # E-commerce & design
-        "shopify_developer_app", "figma", "linkedin", "google_analytics"
-    ]
+    logger.info(f"Fetching Pipedream apps registry")
     
     try:
         from pipedream.client import get_pipedream_client
@@ -400,10 +376,6 @@ async def get_pipedream_apps(
         params = {}
         if search:
             params["q"] = search  # Pipedream API uses 'q' for search
-        if page > 1:
-            # Pipedream API uses cursor-based pagination, not page numbers
-            # For now, we'll just return the first page
-            logger.warning(f"Page {page} requested, but Pipedream API uses cursor-based pagination. Returning first page.")
         
         session = await client._get_session()
         response = await session.get(url, headers=headers, params=params)
@@ -412,38 +384,11 @@ async def get_pipedream_apps(
         data = response.json()
         apps = data.get("data", [])
         
-        # Apply curation logic (only if no search query to preserve search results)
-        if not search:
-            # Separate featured and non-featured apps
-            featured_apps = []
-            other_apps = []
-            featured_slugs = set(FEATURED_APPS)
-            
-            for app in apps:
-                app_slug = app.get("name_slug", "").lower()
-                if app_slug in featured_slugs:
-                    featured_apps.append(app)
-                else:
-                    other_apps.append(app)
-            
-            # Sort featured apps by the order in FEATURED_APPS list
-            featured_apps.sort(key=lambda app: FEATURED_APPS.index(app.get("name_slug", "").lower()) 
-                             if app.get("name_slug", "").lower() in FEATURED_APPS else len(FEATURED_APPS))
-            
-            # Combine: featured first, then others
-            curated_apps = featured_apps + other_apps
-            
-            logger.info(f"Applied curation: {len(featured_apps)} featured apps, {len(other_apps)} other apps")
-        else:
-            curated_apps = apps
-            logger.info(f"Search query provided, skipping curation")
-        
-        logger.info(f"Successfully fetched {len(curated_apps)} apps from Pipedream registry")
+        logger.info(f"Successfully fetched {len(apps)} apps from Pipedream registry")
         return {
             "success": True,
-            "apps": curated_apps,
-            "page_info": data.get("page_info", {}),
-            "total_count": data.get("page_info", {}).get("total_count", 0)
+            "apps": apps,
+            "total_count": len(apps)
         }
         
     except Exception as e:
