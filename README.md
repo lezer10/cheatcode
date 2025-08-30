@@ -1,6 +1,6 @@
 <div align="center">
 
-# Cheatcode - Open Source AI Coding Agent
+# cheatcode - open source ai coding agent
 
 An open-source, production-ready AI coding agent for apps and websites.
 
