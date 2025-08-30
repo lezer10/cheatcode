@@ -7,6 +7,7 @@ An open-source, production-ready AI coding agent for apps and websites.
 Build, run, and ship full-stack applications with an agent that codes, executes, deploys, and integrates with your stack.
 
 [![License](https://img.shields.io/badge/License-Apache--2.0-blue)](./LICENSE-Apache-2.0)
+[![Backend Status](https://github.com/iamjr15/cheatcode-production/actions/workflows/deploy-cloud-run.yml/badge.svg)](https://github.com/iamjr15/cheatcode-production/actions/workflows/deploy-cloud-run.yml)
 [![Backend](https://img.shields.io/badge/Backend-FastAPI-009688)](#backend)
 [![Frontend](https://img.shields.io/badge/Frontend-Next.js_15-000000)](#frontend)
 [![DB](https://img.shields.io/badge/DB-Supabase-3FCF8E)](#database)
