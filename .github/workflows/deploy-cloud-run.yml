@@ -1,0 +1,89 @@
+name: Deploy to Google Cloud Run
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  PROJECT_ID: cheatcode-backend
+  SERVICE_API: cheatcode-api
+  SERVICE_WORKER: cheatcode-worker
+  REGION: asia-south1
+  IMAGE_NAME: gcr.io/cheatcode-backend/backend-api
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Configure Docker for GCR
+        run: gcloud auth configure-docker
+
+      - name: Set image tag
+        id: image_tag
+        run: |
+          echo "tag=latest" >> $GITHUB_OUTPUT
+
+      - name: Build Docker image
+        run: |
+          docker build -t ${{ env.IMAGE_NAME }}:${{ steps.image_tag.outputs.tag }} ./backend
+
+      - name: Push Docker image
+        run: |
+          docker push ${{ env.IMAGE_NAME }}:${{ steps.image_tag.outputs.tag }}
+
+      - name: Deploy API service to Cloud Run
+        run: |
+          gcloud run deploy ${{ env.SERVICE_API }} \
+            --image ${{ env.IMAGE_NAME }}:${{ steps.image_tag.outputs.tag }} \
+            --platform managed \
+            --region ${{ env.REGION }} \
+            --allow-unauthenticated \
+            --port 8000 \
+            --set-secrets "ENV_MODE=ENV_MODE:latest,REDIS_URL=REDIS_URL:latest,SUPABASE_URL=SUPABASE_URL:latest,SUPABASE_ANON_KEY=SUPABASE_ANON_KEY:latest,SUPABASE_SERVICE_ROLE_KEY=SUPABASE_SERVICE_ROLE_KEY:latest,ANTHROPIC_API_KEY=ANTHROPIC_API_KEY:latest,OPENAI_API_KEY=OPENAI_API_KEY:latest,OPENROUTER_API_KEY=OPENROUTER_API_KEY:latest,MORPH_API_KEY=MORPH_API_KEY:latest,MODEL_TO_USE=MODEL_TO_USE:latest,CLERK_SECRET_KEY=CLERK_SECRET_KEY:latest,CLERK_DOMAIN=CLERK_DOMAIN:latest,DODO_PAYMENTS_API_KEY=DODO_PAYMENTS_API_KEY:latest,DODO_PAYMENTS_WEBHOOK_SECRET=DODO_PAYMENTS_WEBHOOK_SECRET:latest,TAVILY_API_KEY=TAVILY_API_KEY:latest,FIRECRAWL_API_KEY=FIRECRAWL_API_KEY:latest,FIRECRAWL_URL=FIRECRAWL_URL:latest,DAYTONA_API_KEY=DAYTONA_API_KEY:latest,DAYTONA_SERVER_URL=DAYTONA_SERVER_URL:latest,DAYTONA_TARGET=DAYTONA_TARGET:latest,LANGFUSE_PUBLIC_KEY=LANGFUSE_PUBLIC_KEY:latest,LANGFUSE_SECRET_KEY=LANGFUSE_SECRET_KEY:latest,LANGFUSE_HOST=LANGFUSE_HOST:latest,FREESTYLE_API_KEY=FREESTYLE_API_KEY:latest,FEATURE_FLAGS_ENABLED=FEATURE_FLAGS_ENABLED:latest,PIPEDREAM_CLIENT_ID=PIPEDREAM_CLIENT_ID:latest,PIPEDREAM_CLIENT_SECRET=PIPEDREAM_CLIENT_SECRET:latest,PIPEDREAM_PROJECT_ID=PIPEDREAM_PROJECT_ID:latest,PIPEDREAM_X_PD_ENVIRONMENT=PIPEDREAM_X_PD_ENVIRONMENT:latest,SMITHERY_API_KEY=SMITHERY_API_KEY:latest,MCP_CREDENTIAL_ENCRYPTION_KEY=MCP_CREDENTIAL_ENCRYPTION_KEY:latest,GOOGLE_API_KEY=GOOGLE_API_KEY:latest,NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:latest,NEXT_PUBLIC_URL=NEXT_PUBLIC_URL:latest" \
+            --memory 4Gi \
+            --cpu 2 \
+            --concurrency 160 \
+            --max-instances 3 \
+            --min-instances 1 \
+            --no-cpu-throttling \
+            --timeout 900
+
+      - name: Deploy Worker service to Cloud Run
+        run: |
+          gcloud run deploy ${{ env.SERVICE_WORKER }} \
+            --image ${{ env.IMAGE_NAME }}:${{ steps.image_tag.outputs.tag }} \
+            --platform managed \
+            --region ${{ env.REGION }} \
+            --allow-unauthenticated \
+            --port 8000 \
+            --set-secrets "ENV_MODE=ENV_MODE:latest,REDIS_URL=REDIS_URL:latest,SUPABASE_URL=SUPABASE_URL:latest,SUPABASE_ANON_KEY=SUPABASE_ANON_KEY:latest,SUPABASE_SERVICE_ROLE_KEY=SUPABASE_SERVICE_ROLE_KEY:latest,ANTHROPIC_API_KEY=ANTHROPIC_API_KEY:latest,OPENAI_API_KEY=OPENAI_API_KEY:latest,OPENROUTER_API_KEY=OPENROUTER_API_KEY:latest,MORPH_API_KEY=MORPH_API_KEY:latest,MODEL_TO_USE=MODEL_TO_USE:latest,CLERK_SECRET_KEY=CLERK_SECRET_KEY:latest,CLERK_DOMAIN=CLERK_DOMAIN:latest,DODO_PAYMENTS_API_KEY=DODO_PAYMENTS_API_KEY:latest,DODO_PAYMENTS_WEBHOOK_SECRET=DODO_PAYMENTS_WEBHOOK_SECRET:latest,TAVILY_API_KEY=TAVILY_API_KEY:latest,FIRECRAWL_API_KEY=FIRECRAWL_API_KEY:latest,FIRECRAWL_URL=FIRECRAWL_URL:latest,DAYTONA_API_KEY=DAYTONA_API_KEY:latest,DAYTONA_SERVER_URL=DAYTONA_SERVER_URL:latest,DAYTONA_TARGET=DAYTONA_TARGET:latest,LANGFUSE_PUBLIC_KEY=LANGFUSE_PUBLIC_KEY:latest,LANGFUSE_SECRET_KEY=LANGFUSE_SECRET_KEY:latest,LANGFUSE_HOST=LANGFUSE_HOST:latest,FREESTYLE_API_KEY=FREESTYLE_API_KEY:latest,FEATURE_FLAGS_ENABLED=FEATURE_FLAGS_ENABLED:latest,PIPEDREAM_CLIENT_ID=PIPEDREAM_CLIENT_ID:latest,PIPEDREAM_CLIENT_SECRET=PIPEDREAM_CLIENT_SECRET:latest,PIPEDREAM_PROJECT_ID=PIPEDREAM_PROJECT_ID:latest,PIPEDREAM_X_PD_ENVIRONMENT=PIPEDREAM_X_PD_ENVIRONMENT:latest,SMITHERY_API_KEY=SMITHERY_API_KEY:latest,MCP_CREDENTIAL_ENCRYPTION_KEY=MCP_CREDENTIAL_ENCRYPTION_KEY:latest,GOOGLE_API_KEY=GOOGLE_API_KEY:latest,NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY:latest,NEXT_PUBLIC_URL=NEXT_PUBLIC_URL:latest" \
+            --memory 4Gi \
+            --cpu 2 \
+            --concurrency 80 \
+            --max-instances 2 \
+            --min-instances 1 \
+            --no-cpu-throttling \
+            --timeout 900 \
+            --command="uv" \
+            --args="run,python,worker_service.py"
+
+      - name: Output deployment URLs
+        run: |
+          echo "API Service URL: $(gcloud run services describe ${{ env.SERVICE_API }} --region=${{ env.REGION }} --format='value(status.url)')"
+          echo "Worker Service URL: $(gcloud run services describe ${{ env.SERVICE_WORKER }} --region=${{ env.REGION }} --format='value(status.url)')"

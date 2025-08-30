@@ -23,17 +23,19 @@ COPY --chown=app:app . .
 USER app
 
 ENV PYTHONPATH=/app
-EXPOSE 8000
+# Support both local development and Cloud Run PORT env var
+ENV PORT=8000
+EXPOSE $PORT
 
 # Container health-check
-HEALTHCHECK --interval=30s --timeout=10s --retries=3 CMD curl -f http://localhost:8000/api/health || exit 1
+HEALTHCHECK --interval=30s --timeout=10s --retries=3 CMD curl -f http://localhost:${PORT}/api/health || exit 1
 
 # Gunicorn – compute optimal workers (2×CPU+1) at runtime
 CMD ["sh", "-c", "CPU=$(getconf _NPROCESSORS_ONLN); WORKERS=$((2*CPU+1)); exec \
 uv run gunicorn main:app \
   --workers ${WORKERS} \
   --worker-class uvicorn.workers.UvicornWorker \
-  --bind 0.0.0.0:8000 \
+  --bind 0.0.0.0:${PORT} \
   --timeout 1800 \
   --graceful-timeout 600 \
   --keep-alive 1800 \

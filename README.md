@@ -35,8 +35,8 @@ Build, run, and ship full-stack applications with an agent that codes, executes,
 
 Cheatcode is a full-stack application that pairs a Next.js dashboard with a FastAPI backend to provide an AI agent capable of:
 
-- Creating and modifying projects and threads with a collaborative chat interface
-- Executing actions inside isolated sandboxes using Daytona for code execution and app previews
+- Creating and modifying projects and threads with a collaborative chat interface  
+- Executing all code operations in isolated sandboxes using Daytona (required for file operations, shell commands, and app previews)
 - Integrating with multiple LLM providers including OpenAI, Anthropic, OpenRouter, and Groq via LiteLLM
 - Managing authentication and data through Supabase with Redis for queues and caching
 - Supporting web browsing and crawling via external APIs with optional billing and usage tracking
@@ -121,11 +121,11 @@ graph TD
 
 - **Supabase project** with URL, anon key, and service role key
 - **Clerk application** with publishable key and secret key
+- **Daytona account** with API key, server URL, and target for sandbox code execution and app previews
 - **At least one LLM provider**: OpenAI, Anthropic, OpenRouter, or Groq API key
 
 ### Optional Integrations
 
-- **Daytona account** for sandbox code execution and app previews
 - **Sentry** for error monitoring
 - **Langfuse** for LLM observability
 
@@ -155,15 +155,15 @@ CLERK_SECRET_KEY=YOUR_CLERK_SECRET_KEY
 # Redis (Docker Compose uses service name 'redis')
 REDIS_URL=redis://redis:6379
 
+# Sandbox Integration (Required)
+DAYTONA_API_KEY=YOUR_DAYTONA_API_KEY
+DAYTONA_SERVER_URL=YOUR_DAYTONA_SERVER_URL
+DAYTONA_TARGET=YOUR_DAYTONA_TARGET
+
 # LLM Providers (choose at least one)
 OPENAI_API_KEY=YOUR_OPENAI_API_KEY
 ANTHROPIC_API_KEY=YOUR_ANTHROPIC_API_KEY
 OPENROUTER_API_KEY=YOUR_OPENROUTER_API_KEY
-
-# Optional: Sandbox Integration
-DAYTONA_API_KEY=YOUR_DAYTONA_API_KEY
-DAYTONA_SERVER_URL=YOUR_DAYTONA_SERVER_URL
-DAYTONA_TARGET=YOUR_DAYTONA_TARGET
 
 # Optional: External Services
 TAVILY_API_KEY=YOUR_TAVILY_API_KEY
@@ -214,6 +214,7 @@ docker compose up --build
 2. **Frontend Access**: Visit http://localhost:3000 and sign in with Clerk
 3. **Create Project**: Create a new project and thread
 4. **Test Agent**: Send a message and start the agent
+5. **Verify Sandbox**: Ensure Daytona credentials are working - the agent cannot execute code without a properly configured Daytona sandbox environment
 
 ## Local Development
 
@@ -272,9 +273,9 @@ npm run dev
 | `ANTHROPIC_API_KEY` | * | Anthropic API key |
 | `OPENROUTER_API_KEY` | * | OpenRouter API key |
 | `GROQ_API_KEY` | * | Groq API key |
-| `DAYTONA_API_KEY` | No | Daytona API key for sandboxes |
-| `DAYTONA_SERVER_URL` | No | Daytona server URL |
-| `DAYTONA_TARGET` | No | Daytona target environment |
+| `DAYTONA_API_KEY` | Yes | Daytona API key for sandbox code execution |
+| `DAYTONA_SERVER_URL` | Yes | Daytona server URL |
+| `DAYTONA_TARGET` | Yes | Daytona target environment |
 | `TAVILY_API_KEY` | No | Tavily API key for web search |
 | `FIRECRAWL_API_KEY` | No | Firecrawl API key for web scraping |
 | `LANGFUSE_PUBLIC_KEY` | No | Langfuse public key for LLM observability |
@@ -527,10 +528,11 @@ sudo usermod -aG docker $USER
    - Check rate limits and usage quotas
    - Review backend logs for LLM errors
 
-3. **Sandbox Issues**
-   - Ensure Daytona credentials are configured
+3. **Sandbox Issues** (Required for core functionality)
+   - Ensure Daytona credentials are configured (required for code execution)
    - Check Daytona service status
    - Verify network connectivity to Daytona servers
+   - Note: The agent cannot execute code or create files without working Daytona integration
 
 ### Getting Help
 
