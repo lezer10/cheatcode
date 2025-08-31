@@ -248,7 +248,7 @@ export function Navbar({ sidebarOpen = false }: { sidebarOpen?: boolean }) {
   }
 
   return (
-    <header className="relative z-50 mt-4">
+    <header className="relative z-50">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-[56px] items-center justify-between">
           {!sidebarOpen && (

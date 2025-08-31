@@ -18,7 +18,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { isLocalMode } from '@/lib/config';
-import { CheatcodeLogo } from '@/components/sidebar/cheatcode-logo';
+
 
 export function MaintenancePage() {
   const [lastChecked, setLastChecked] = useState<Date | null>(null);
@@ -65,15 +65,7 @@ export function MaintenancePage() {
       </div>
 
       <div className="relative mx-auto flex min-h-screen max-w-4xl flex-col items-center justify-center px-4 py-16">
-        {/* Logo + emblem */}
-        <div className="mb-6 flex items-center justify-center">
-          <div className="relative">
-            <div className="absolute inset-0 rounded-2xl bg-primary/30 blur-xl" />
-            <div className="relative flex h-20 w-20 items-center justify-center rounded-2xl border border-primary/20 bg-background/70 shadow-[0_0_0_1px_rgba(255,255,255,0.05)] backdrop-blur-xl">
-              <CheatcodeLogo size={40} />
-            </div>
-          </div>
-        </div>
+
 
         <div className="mb-3 flex items-center gap-2">
           <Badge variant="outline" className="bg-primary/10 text-primary border-primary/30">
