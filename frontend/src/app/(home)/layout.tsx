@@ -13,19 +13,14 @@ import { useAccounts } from '@/hooks/use-accounts';
 import { Loader2 } from 'lucide-react';
 import { MaintenancePage } from '@/components/maintenance/maintenance-page';
 import { StatusOverlay } from '@/components/ui/status-overlay';
-import type { IMaintenanceNotice } from '@/lib/edge-flags';
-import { MaintenanceNotice } from './_components/maintenance-notice';
-import { MaintenanceBanner } from './_components/maintenance-banner';
 import { useApiHealth } from '@/hooks/react-query/usage/use-health';
 
 interface HomeLayoutProps {
   children: React.ReactNode;
-  maintenanceNotice?: IMaintenanceNotice;
 }
 
 export default function HomeLayout({
   children,
-  maintenanceNotice,
 }: HomeLayoutProps) {
   const { user, isLoaded } = useUser();
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -35,8 +30,6 @@ export default function HomeLayout({
   // Enhanced features from layout-content.tsx
   const [showPricingAlert, setShowPricingAlert] = useState(false);
   const [showMaintenanceAlert, setShowMaintenanceAlert] = useState(false);
-  // TODO: Implement maintenance notice fetching from API or server component
-  const [currentMaintenanceNotice] = useState<IMaintenanceNotice>({ enabled: false });
   const { data: accounts } = useAccounts();
   const personalAccount = accounts?.find((account) => account.personal_account);
 
@@ -70,34 +63,7 @@ export default function HomeLayout({
     return () => window.removeEventListener('toggleHomeSidebar', handleToggleSidebar);
   }, []);
 
-  // Enhanced: Smart Maintenance System
-  if (currentMaintenanceNotice.enabled) {
-    const now = new Date();
-    const startTime = currentMaintenanceNotice.startTime;
-    const endTime = currentMaintenanceNotice.endTime;
 
-    // If maintenance period has started, show maintenance page
-    if (now > startTime) {
-      return (
-        <div className="w-screen h-screen flex items-center justify-center">
-          <div className="max-w-xl">
-            <MaintenanceNotice endTime={endTime.toISOString()} />
-          </div>
-        </div>
-      );
-    }
-  }
-
-  // Enhanced: Maintenance banner for upcoming maintenance
-  let maintenanceBanner: React.ReactNode | null = null;
-  if (currentMaintenanceNotice.enabled) {
-    maintenanceBanner = (
-      <MaintenanceBanner
-        startTime={currentMaintenanceNotice.startTime.toISOString()}
-        endTime={currentMaintenanceNotice.endTime.toISOString()}
-      />
-    );
-  }
 
   // Enhanced: Show loading state while checking auth or health
   if (!isClient || !isLoaded || isCheckingHealth) {
@@ -146,9 +112,6 @@ export default function HomeLayout({
         <SidebarProvider open={sidebarOpen} onOpenChange={setSidebarOpen}>
         <SidebarLeft />
         <SidebarInset>
-          {/* Enhanced: Maintenance banner */}
-          {maintenanceBanner}
-
           <div
             className="w-full relative min-h-screen"
             style={!isThreadPage ? {
