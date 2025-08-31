@@ -342,7 +342,6 @@ export function Navbar({ sidebarOpen = false }: { sidebarOpen?: boolean }) {
                       <HoverBorderGradient
                         containerClassName=""
                         className="h-8 flex items-center justify-center text-sm font-normal tracking-wide text-white w-fit px-3"
-                        duration={2}
                       >
                         <Zap className="w-3 h-3 mr-1.5" />
                         Integrations
