@@ -21,20 +21,21 @@ export function DailyRefillsMeter({
 }: DailyRefillsMeterProps) {
   const { planName, rawCreditsTotal, rawCreditsRemaining } = useBilling();
   
-  // Only show for free users
+  // Don't show daily refills meter for free users anymore since they get credits upfront
+  // This component is now only for paid plans with actual daily refill systems (if any)
   const isFreeUser = planName?.toLowerCase() === 'free' || !planName;
   
-  if (!isFreeUser) {
+  if (isFreeUser) {
     return null;
   }
 
   // Calculate refills used this month
-  // Each refill = 5 credits, max 4 refills = 20 credits total
-  const maxRefills = 4;
-  const creditsPerRefill = 5;
+  // Each refill = 1 credit, max 5 refills = 5 credits total
+  const maxRefills = 5;
+  const creditsPerRefill = 1;
   
   // Calculate how many refills have been used based on total credits given vs remaining
-  const creditsUsed = (rawCreditsTotal || 20) - (rawCreditsRemaining || 20);
+  const creditsUsed = (rawCreditsTotal || 5) - (rawCreditsRemaining || 5);
   const refillsUsed = Math.min(Math.ceil(creditsUsed / creditsPerRefill), maxRefills);
   const refillsRemaining = maxRefills - refillsUsed;
   
@@ -55,10 +56,10 @@ export function DailyRefillsMeter({
         <span>Daily Refills</span>
       </div>
       <ul className="text-sm space-y-1 text-foreground/90">
-        <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-emerald-400 mt-0.5" /> <span>5 credits added each day (up to 4×/month)</span></li>
+        <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-emerald-400 mt-0.5" /> <span>1 credit added each day (up to 5×/month)</span></li>
         <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-emerald-400 mt-0.5" /> <span>Refills reset at midnight</span></li>
-        <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-emerald-400 mt-0.5" /> <span>Unused refills don’t carry over</span></li>
-        <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-emerald-400 mt-0.5" /> <span>Maximum 20 credits per month</span></li>
+        <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-emerald-400 mt-0.5" /> <span>Unused refills don't carry over</span></li>
+        <li className="flex items-start gap-2"><CheckCircle className="h-4 w-4 text-emerald-400 mt-0.5" /> <span>Maximum 5 credits per month</span></li>
       </ul>
       {refillsRemaining > 0 ? (
         <div className="text-sm bg-blue-600/15 border border-blue-400/30 text-blue-100 p-3 rounded-md">
@@ -68,7 +69,7 @@ export function DailyRefillsMeter({
       ) : (
         <div className="text-sm bg-amber-600/15 border border-amber-400/30 text-amber-100 p-3 rounded-md">
           <div className="font-medium">Monthly limit reached</div>
-          <div>You've used all 4 daily refills this month. Upgrade for more credits.</div>
+          <div>You've used all 5 daily refills this month. Buy credits for unlimited usage.</div>
         </div>
       )}
     </div>

@@ -96,10 +96,10 @@ export function BillingProvider({ children }: { children: React.ReactNode }) {
   const deploymentsTotal = billingStatus?.deployments_total || 0;
   const deploymentUsagePercentage = deploymentsTotal > 0 ? (deploymentsUsed / deploymentsTotal) * 100 : 0;
   
-  // For free users, show daily credits (5/5) instead of monthly total (20/20)
+  // For free users, show all credits available at once (no daily limit)
   const isFreeUser = planName?.toLowerCase() === 'free' || billingStatus?.plan_id === 'free';
-  const creditsRemaining = isFreeUser ? Math.min(rawCreditsRemaining, 5) : rawCreditsRemaining;
-  const creditsTotal = isFreeUser ? 5 : rawCreditsTotal;
+  const creditsRemaining = rawCreditsRemaining;
+  const creditsTotal = rawCreditsTotal;
   const creditsUsagePercentage = creditsTotal > 0 ? ((creditsTotal - creditsRemaining) / creditsTotal) * 100 : 0;
   const isUpgradeRequired = rawCreditsRemaining <= 0 && billingStatus?.plan_id !== 'byok';
   

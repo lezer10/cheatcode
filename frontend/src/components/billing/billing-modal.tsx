@@ -58,7 +58,7 @@ export function BillingModal({ open, onOpenChange, returnUrl = window?.location?
                                 <div className="rounded-lg border bg-background p-4">
                                     <div className="flex justify-between items-center">
                                         <span className="text-sm font-medium text-foreground/90">
-                                            Agent Usage This Month
+                                            Agent Usage
                                         </span>
                                         <span className="text-sm font-medium">
                                             ${subscriptionData.current_usage?.toFixed(2) || '0'} /{' '}

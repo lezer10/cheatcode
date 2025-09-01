@@ -23,7 +23,7 @@ export function useBillingError() {
     // Case 1: Error is already a formatted billing error detail object
     if (error && (error.message || error.subscription)) {
       setBillingError({
-        message: error.message || "You've reached your monthly usage limit.",
+        message: error.message || "You've reached your credit limit.",
         currentUsage: error.currentUsage || error.subscription?.current_usage,
         limit: error.limit || error.subscription?.limit,
         subscription: error.subscription || {},
@@ -42,7 +42,7 @@ export function useBillingError() {
 
       setBillingError({
         message:
-          errorDetail.message || "You've reached your monthly usage limit.",
+          errorDetail.message || "You've reached your credit limit.",
         currentUsage: subscription.current_usage,
         limit: subscription.limit,
         subscription,

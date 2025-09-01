@@ -8,39 +8,39 @@ PLANS = {
         'name': 'Free',
         'price_inr': 0,
         'price_usd': 0,
-        'token_quota': 100000,      # ~20 typical conversations
-        'display_credits': 20,      # User sees "20 credits/month"
-        'daily_refills_max': 4,     # Maximum 4 refills per month
-        'credits_per_refill': 5,    # 5 credits per daily refill
-        'features': ['5 credits daily (up to 20/month)', '1 deployed website', 'Community support'],
-        'description': '5 credits daily (up to 20 credits/month) - Perfect for getting started'
+        'token_quota': 25000,       # ~5 typical conversations
+        'display_credits': 5,       # User sees "5 credits"
+        'daily_refills_max': 0,     # No daily refills - all credits available at once
+        'credits_per_refill': 0,    # No refills
+        'features': ['5 credits/month', '1 deployed website', 'Community support'],
+        'description': '5 credits/month - Perfect for getting started'
     },
     'pro': {
         'name': 'Pro', 
         'price_inr': 149900,        # ₹1499 (in paisa)
         'price_usd': 1800,          # $18 (in cents)
         'token_quota': 750000,      # ~150 typical conversations 
-        'display_credits': 150,     # User sees "150 credits/month"
+        'display_credits': 150,     # User sees "150 credits"
         'features': ['Priority Support', 'All Models', 'Advanced Features'],
-        'description': '150 credits/month - Great for regular users'
+        'description': '150 credits included - Great for regular users'
     },
     'premium': {
         'name': 'Premium',
         'price_inr': 259900,        # ₹2599 (in paisa)
         'price_usd': 3000,          # $30 (in cents)
         'token_quota': 1250000,     # ~250 typical conversations
-        'display_credits': 250,     # User sees "250 credits/month"
+        'display_credits': 250,     # User sees "250 credits"
         'features': ['Priority Support', 'All Models + Beta', 'Advanced Analytics'],
-        'description': '250 credits/month - Perfect for power users'
+        'description': '250 credits included - Perfect for power users'
     },
     'byok': {
         'name': 'BYOK',
-        'price_inr': 1299500,       # ₹12995 (in paisa) - Annual pricing 
-        'price_usd': 10800,         # $108 (in cents) - Annual pricing
+        'price_inr': 109900,        # ₹1099 (in paisa) - Monthly pricing 
+        'price_usd': 900,           # $9 (in cents) - Monthly pricing
         'token_quota': -1,          # Unlimited
         'display_credits': -1,      # "Unlimited"
         'features': ['Bring Your Own OpenRouter Key', 'Unlimited Usage', 'Real Cost Pricing', 'Dedicated Support'],
-        'description': 'Bring your own OpenRouter API key - $9/month billed annually ($108/year)'
+        'description': 'Bring your own OpenRouter API key - $9/month subscription'
     }
 }
 

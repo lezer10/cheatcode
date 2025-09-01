@@ -245,7 +245,7 @@ export function ThreadActionsProvider({ children }: ThreadActionsProviderProps) 
           setBillingData({
             currentUsage: err.detail.currentUsage as number | undefined,
             limit: err.detail.limit as number | undefined,
-            message: err.detail.message || 'Monthly usage limit reached. Please upgrade.',
+            message: err.detail.message || 'Credit limit reached. Please buy more credits.',
             accountId: project?.account_id || null
           });
           setShowBillingAlert(true);

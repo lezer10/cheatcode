@@ -153,7 +153,9 @@ export function UpgradePrompt({ trigger, autoOpen = false, onClose }: UpgradePro
                   </div>
                   <div className="text-sm text-muted-foreground">
                     <Zap className="h-4 w-4 inline mr-1" />
-                    {plan.display_credits} credits/month
+                    {plan.name.toLowerCase() === 'free' ? `${plan.display_credits} credits/month` : 
+                     plan.name.toLowerCase().includes('byok') ? 'Unlimited credits' :
+                     `${plan.display_credits} credits included`}
                   </div>
                 </CardHeader>
                 
@@ -195,7 +197,7 @@ export function UpgradePrompt({ trigger, autoOpen = false, onClose }: UpgradePro
 
         <div className="text-center text-xs text-muted-foreground mt-4">
           <p>All plans include a 30-day money-back guarantee.</p>
-          <p>Credits reset monthly on your billing date.</p>
+          <p>Pro/Premium credits never expire. Free credits reset monthly.</p>
         </div>
       </div>
     </DialogContent>

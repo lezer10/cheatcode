@@ -20,28 +20,27 @@ import { Badge } from '@/components/ui/badge';
 import { PlanDetails } from '@/lib/api';
 import { LocalizedPrice } from 'react-currency-localizer';
 
-type FREQUENCY = 'monthly' | 'yearly';
-
-interface BillingPlan {
+interface RawPlan {
 	name: string;
 	info: string;
-	price: {
-		monthly: number;
-		yearly: number;
-	};
+	price: number | { monthly: number };
 	features: {
 		text: string;
 		tooltip?: string;
 	}[];
+	credits: number;
+	planId: string;
+	highlighted?: boolean;
+}
+
+interface BillingPlan extends RawPlan {
 	btn: {
 		text: string;
 		href?: string;
 		onClick?: () => void;
 	};
-	highlighted?: boolean;
 	isCurrentPlan?: boolean;
 	isUpgrading?: boolean;
-	credits: number;
 }
 
 interface BillingPricingSectionProps extends React.ComponentProps<'div'> {
@@ -62,7 +61,7 @@ export function BillingPricingSection({
 	description,
 	...props
 }: BillingPricingSectionProps) {
-	const [frequency, setFrequency] = React.useState<'monthly' | 'yearly'>('monthly');
+
 	const [upgradingPlan, setUpgradingPlan] = useState<string | null>(null);
 	
 	const { getToken, isSignedIn } = useAuth();
@@ -115,26 +114,26 @@ export function BillingPricingSection({
 	const getStaticPricingPlans = (): BillingPlan[] => {
 		const currentPlan = planName?.toLowerCase();
 		
-		const plans = [
+		const plans: RawPlan[] = [
 			{
 				name: 'Free',
 				info: 'Perfect for getting started',
-				price: { monthly: 0, yearly: 0 },
+				price: 0,
 				features: [
-					{ text: '5 credits daily (up to 20 credits/month)', tooltip: 'Daily credit allocation with monthly cap' },
+					{ text: '5 credits/month', tooltip: 'Monthly credit allocation - use anytime' },
 					{ text: '1 deployed website', tooltip: 'Host one website for free' },
 					{ text: 'Community support', tooltip: 'Access to community forums and documentation' },
 				],
-				credits: 20,
+				credits: 5,
 				planId: 'free'
 			},
 			{
 				name: 'Pro',
 				info: 'Best for growing developers',
-				price: { monthly: 18, yearly: 180 }, // USD prices
+				price: 18, // USD price - one-time purchase
 				features: [
 					{ text: 'Everything in Free' },
-					{ text: '150 credits/month', tooltip: 'Monthly credit allocation for AI operations' },
+					{ text: '150 credits included', tooltip: 'One-time credit purchase - credits never expire' },
 					{ text: '10 deployed websites', tooltip: 'Host up to 10 websites' },
 					{ text: 'Custom domains', tooltip: 'Use your own domain names' },
 					{ text: 'Codebase download', tooltip: 'Download your generated code' },
@@ -146,10 +145,10 @@ export function BillingPricingSection({
 			{
 				name: 'Premium',
 				info: 'For professional developers',
-				price: { monthly: 30, yearly: 300 }, // USD prices
+				price: 30, // USD price - one-time purchase
 				features: [
 					{ text: 'Everything in Pro' },
-					{ text: '250 credits/month', tooltip: 'Monthly credit allocation for AI operations' },
+					{ text: '250 credits included', tooltip: 'One-time credit purchase - credits never expire' },
 					{ text: '25 deployed websites', tooltip: 'Host up to 25 websites' },
 					{ text: 'Priority support', tooltip: '24/7 email and chat support' },
 				],
@@ -159,7 +158,7 @@ export function BillingPricingSection({
 			{
 				name: 'Bring Your Own Key (BYOK)',
 				info: 'Ultimate flexibility',
-				price: { monthly: 9, yearly: 108 }, // USD prices
+				price: { monthly: 9 }, // USD price - monthly subscription only
 				features: [
 					{ text: 'API cost paid directly to LLM provider', tooltip: 'Pay OpenAI/Anthropic directly, no markup' },
 					{ text: '100 deployed websites', tooltip: 'Host up to 100 websites' },
@@ -182,8 +181,9 @@ export function BillingPricingSection({
 				const getButtonText = () => {
 					if (isCurrentPlan) return 'Current Plan';
 					if (isUpgrading) return 'Processing...';
-					if (plan.price.monthly === 0) return 'Get Started';
-					return 'Upgrade';
+					if (typeof plan.price === 'number' && plan.price === 0) return 'Get Started';
+					if (plan.planId === 'byok') return 'Subscribe';
+					return 'Buy Credits';
 				};
 
 				return {
@@ -199,6 +199,7 @@ export function BillingPricingSection({
 					isCurrentPlan,
 					isUpgrading,
 					credits: plan.credits,
+					planId: plan.planId,
 				};
 			});
 	};
@@ -237,7 +238,6 @@ export function BillingPricingSection({
                         {plans.filter(plan => !plan.name.includes('BYOK')).map((plan) => (
                             <BillingPricingCard 
                                 plan={plan}
-                                frequency={frequency}
                                 insideDialog={insideDialog}
                                 isByokPlan={false}
                                 key={plan.name} 
@@ -249,7 +249,6 @@ export function BillingPricingSection({
                         <div key={plan.name} className="mx-auto w-full max-w-6xl mt-4 md:mt-6 grid grid-cols-1 lg:grid-cols-2 gap-4">
                             <BillingPricingCard 
                                 plan={plan}
-                                frequency={frequency}
                                 insideDialog={insideDialog}
                                 isByokPlan={true}
                             />
@@ -282,7 +281,6 @@ export function BillingPricingSection({
 				{plans.filter(plan => !plan.name.includes('BYOK')).map((plan) => (
 					<BillingPricingCard 
 						plan={plan}
-						frequency={frequency}
 						insideDialog={insideDialog}
 						isByokPlan={false}
 						key={plan.name} 
@@ -294,7 +292,6 @@ export function BillingPricingSection({
 					{plans.filter(plan => plan.name.includes('BYOK')).map((plan) => (
 						<BillingPricingCard 
 							plan={plan}
-							frequency={frequency}
 							insideDialog={insideDialog}
 							isByokPlan={true}
 							key={plan.name} 
@@ -310,7 +307,6 @@ export function BillingPricingSection({
 
 type BillingPricingCardProps = React.ComponentProps<'div'> & {
 	plan: BillingPlan;
-	frequency?: FREQUENCY;
 	insideDialog?: boolean;
 	isByokPlan?: boolean;
 };
@@ -330,7 +326,6 @@ const Step = ({ number, children }: { number: number; children: React.ReactNode 
 export function BillingPricingCard({
 	plan,
 	className,
-	frequency = 'monthly',
 	insideDialog = false,
 	isByokPlan = false,
 	...props
@@ -378,12 +373,12 @@ export function BillingPricingCard({
 				<p className="text-muted-foreground text-sm font-normal">{plan.info}</p>
 				
 				<div className="mt-2 flex items-end gap-1">
-					{plan.price[frequency] === 0 ? (
+					{(typeof plan.price === 'number' && plan.price === 0) ? (
 						<span className="text-3xl font-bold">Free</span>
 					) : (
 						<>
 							<LocalizedPrice 
-								basePrice={isByokPlan ? plan.price.monthly : plan.price[frequency]}
+								basePrice={typeof plan.price === 'number' ? plan.price : plan.price.monthly}
 								baseCurrency="USD"
 								apiKey={process.env.NEXT_PUBLIC_EXCHANGE_API_KEY || ''}
 								formatPrice={(price, currency) => (
@@ -395,12 +390,11 @@ export function BillingPricingCard({
 									</span>
 								)}
 							/>
-                            <span className={cn('text-muted-foreground', insideDialog && 'text-sm')}>
-								{isByokPlan 
-									? '/month' 
-									: `/${frequency === 'monthly' ? 'month' : 'year'}`
-								}
-							</span>
+                            {isByokPlan && (
+								<span className={cn('text-muted-foreground', insideDialog && 'text-sm')}>
+									/month
+								</span>
+							)}
 						</>
 					)}
 				</div>
@@ -408,7 +402,7 @@ export function BillingPricingCard({
 				{isByokPlan && (
 					<div className="mt-1">
 						<Badge variant="secondary" className="text-xs">
-							Paid Annually
+							Monthly Subscription
 						</Badge>
 					</div>
 				)}
@@ -416,10 +410,10 @@ export function BillingPricingCard({
 				{plan.credits !== 0 && (
 					<div className="mt-2 flex items-center gap-2 text-sm text-muted-foreground">
 						<Zap className="h-4 w-4 text-blue-500" />
-						<span>
-							{plan.credits === -1 ? 'Unlimited' : plan.credits} 
-							{plan.credits === -1 ? ' credits' : ' credits/month'}
-						</span>
+											<span>
+						{plan.credits === -1 ? 'Unlimited' : plan.credits} 
+						{plan.planId === 'free' ? ' credits/month' : plan.credits === -1 ? ' credits' : ' credits'}
+					</span>
 					</div>
 				)}
 			</div>
@@ -474,7 +468,7 @@ export function BillingPricingCard({
 				>
 					<span className="flex items-center justify-center space-x-2">
 						<span>{plan.btn.text}</span>
-						{!plan.isCurrentPlan && !plan.isUpgrading && plan.price.monthly > 0 && (
+						{!plan.isCurrentPlan && !plan.isUpgrading && ((typeof plan.price === 'number' && plan.price > 0) || (typeof plan.price === 'object' && plan.price.monthly > 0)) && (
 							<ArrowRight className="h-4 w-4" />
 						)}
 					</span>

@@ -88,9 +88,9 @@ class DodoPaymentsService:
         
         # Product mapping for plans
         product_mapping = {
-            'pro': 'pdt_1Jnk8U6d33BpgIHvLZRf4',        # Pro: $25/month
-            'premium': 'pdt_GAjFoFJyPVseIT8MrbLFL',     # Premium: $50/month
-            'byok': 'pdt_MdtvInruKkrwu5AjzP0ah'         # BYOK: $250/year
+            'pro': 'pdt_1Jnk8U6d33BpgIHvLZRf4',        # Pro: $18 one-time purchase
+            'premium': 'pdt_GAjFoFJyPVseIT8MrbLFL',     # Premium: $30 one-time purchase
+            'byok': 'pdt_MdtvInruKkrwu5AjzP0ah'         # BYOK: $9/month subscription
         }
         
         if plan_id not in product_mapping:

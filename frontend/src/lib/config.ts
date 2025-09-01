@@ -35,10 +35,11 @@ export interface SubscriptionTiers {
 interface Config {
   ENV_MODE: EnvMode;
   IS_LOCAL: boolean;
-  SUBSCRIPTION_TIERS: SubscriptionTiers;
+  SUBSCRIPTION_TIERS: SubscriptionTiers; // DEPRECATED: Old hourly-based pricing system, replaced by credit-based system
 }
 
-// Production tier IDs
+// DEPRECATED: Old hourly-based subscription tiers - replaced by credit-based system in constants.py
+// TODO: Remove this after confirming no dependencies
 const PROD_TIERS: SubscriptionTiers = {
   FREE: {
     priceId: 'price_1RILb4G6l1KZGqIrK4QLrx9i',
@@ -103,7 +104,8 @@ const PROD_TIERS: SubscriptionTiers = {
   },
 } as const;
 
-// Staging tier IDs
+// DEPRECATED: Old hourly-based subscription tiers - replaced by credit-based system in constants.py 
+// TODO: Remove this after confirming no dependencies
 const STAGING_TIERS: SubscriptionTiers = {
   FREE: {
     priceId: 'price_1RIGvuG6l1KZGqIrw14abxeL',

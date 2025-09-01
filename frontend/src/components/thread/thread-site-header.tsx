@@ -826,13 +826,7 @@ function PopoverStats({ deploymentStatus, isLoadingDeploymentStatus }: { deploym
     deploymentUsagePercentage
   } = useBilling() as any;
 
-  // Use actual plan data instead of hardcoded
-  const isFreeUser = planName?.toLowerCase() === 'free' || !planName;
-  const maxRefills = 4;
-  const creditsPerRefill = 5;
-  const creditsUsed = (rawCreditsTotal || 20) - (rawCreditsRemaining || 20);
-  const refillsUsed = Math.min(Math.ceil(creditsUsed / creditsPerRefill), maxRefills);
-  const refillsProgressPercentage = (refillsUsed / maxRefills) * 100;
+
 
   return (
     <TooltipProvider>
@@ -847,31 +841,7 @@ function PopoverStats({ deploymentStatus, isLoadingDeploymentStatus }: { deploym
           </div>
         </div>
 
-        {/* Daily Refills - Only for Free users */}
-        {isFreeUser && !billingLoading && rawCreditsTotal !== undefined && (
-          <div className="space-y-1.5">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1.5">
-                <span className="text-sm text-gray-300">Daily refills</span>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Info className="h-3 w-3 text-gray-500 cursor-help" />
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p className="text-xs">You get up to 4 refills each month. Each refill is 5 credits for the day.</p>
-                  </TooltipContent>
-                </Tooltip>
-              </div>
-              <span className="text-sm font-medium text-white">{refillsUsed}/{maxRefills}</span>
-            </div>
-            <div className="w-full bg-white/10 rounded-full h-[3px]">
-              <div
-                className="bg-green-500 h-[3px] rounded-full transition-all duration-300 shadow-[0_0_6px_1px_rgba(34,197,94,0.35)]"
-                style={{ width: `${refillsProgressPercentage}%` }}
-              ></div>
-            </div>
-          </div>
-        )}
+
 
         {/* Deployments - Use actual billing context data */}
         <div className="space-y-1.5">

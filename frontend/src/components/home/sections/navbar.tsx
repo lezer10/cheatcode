@@ -139,14 +139,7 @@ export function Navbar({ sidebarOpen = false }: { sidebarOpen?: boolean }) {
     deploymentUsagePercentage
   } = useBilling();
 
-  // Calculate daily refills for free users (same logic as DailyRefillsMeter)
-  const isFreeUser = planName?.toLowerCase() === 'free' || !planName;
-  const maxRefills = 4;
-  const creditsPerRefill = 5;
-  const creditsUsed = (rawCreditsTotal || 0) - (rawCreditsRemaining || 0);
-  const refillsUsed = Math.min(Math.ceil(creditsUsed / creditsPerRefill), maxRefills);
-  const refillsRemaining = maxRefills - refillsUsed;
-  const refillsProgressPercentage = (refillsUsed / maxRefills) * 100;
+
 
   const handleSignOut = async () => {
     await signOut({ redirectUrl: '/' });
@@ -427,41 +420,7 @@ export function Navbar({ sidebarOpen = false }: { sidebarOpen?: boolean }) {
                           </div>
                         </div>
 
-                        {/* Daily Refills - Only for Free users with valid data */}
-                        {isFreeUser && !billingLoading && rawCreditsTotal !== undefined && (
-                          <div className="space-y-1.5">
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center gap-1.5">
-                                <span className="text-sm text-gray-300">Daily refills</span>
-                                <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <Info className="h-3 w-3 text-gray-500 cursor-help" />
-                                  </TooltipTrigger>
-                                  <TooltipContent>
-                                    <p className="text-xs">You get up to 4 refills each month. Each refill is 5 credits for the day.</p>
-                                  </TooltipContent>
-                                </Tooltip>
-                              </div>
-                              <span className="text-sm font-medium text-white">
-                                {!billingLoading && rawCreditsTotal !== undefined ?
-                                  `${refillsUsed}/${maxRefills}` :
-                                  '--'
-                                }
-                              </span>
-                            </div>
-                            {/* Progress Bar */}
-                              <div className="w-full bg-white/10 rounded-full h-[3px]">
-                                <div 
-                                  className="bg-green-500 h-[3px] rounded-full transition-all duration-300 shadow-[0_0_6px_1px_rgba(34,197,94,0.35)]" 
-                                style={{ 
-                                  width: !billingLoading && rawCreditsTotal !== undefined ? 
-                                    `${refillsProgressPercentage}%` : 
-                                    '0%' 
-                                }}
-                              ></div>
-                            </div>
-                          </div>
-                        )}
+
 
                         {/* Deployments */}
                         <div className="space-y-1.5">
